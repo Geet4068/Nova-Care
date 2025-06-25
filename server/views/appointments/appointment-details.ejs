@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Appointment Details</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="/public/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="/public/css/sb-admin-2.min.css" rel="stylesheet">
+    
+    <!-- Custom Modal Styles -->
+    <style>
+        .modal-dialog {
+            display: flex;
+            align-items: center;
+            min-height: calc(100% - 1rem);
+        }
+        
+        .modal-content {
+            margin: auto;
+            width: 100%;
+        }
+        
+        @media (min-width: 576px) {
+            .modal-dialog {
+                max-width: 600px;
+                margin: 1.75rem auto;
+            }
+        }
+    </style>
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <!-- Sidebar -->
+        <%- include('../layout/sidebar') %>
+
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+                <!-- Topbar -->
+                <%- include('../layout/topbar') %>
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+                    <!-- Flash Messages -->
+                    <% if (successMessage && successMessage.length > 0) { %>
+                        <div class="alert alert-success">
+                            <%= successMessage %>
+                        </div>
+                    <% } %>
+                    <% if (errorMessage && errorMessage.length > 0) { %>
+                        <div class="alert alert-danger">
+                            <%= errorMessage %>
+                        </div>
+                    <% } %>
+
+                    <!-- Back Button -->
+                    <a href="/admin/appointments" class="btn btn-primary mb-4">
+                        <i class="fas fa-arrow-left"></i> Back to Appointments
+                    </a>
+
+                    <!-- Appointment Details Card -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                            <h6 class="m-0 font-weight-bold text-primary">Appointment Details</h6>
+                            <span class="badge badge-<%= appointment.status === 'Pending' ? 'warning' : appointment.status === 'Completed' ? 'success' : 'danger' %>" style="font-size: 1rem; padding: 8px 15px;">
+                                <%= appointment.status %>
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <div class="text-center mb-4">
+                                <a href="/doctor-details/<%= appointment.doctor_id %>" class="text-decoration-none">
+                                    <h4 class="font-weight-bold text-gray-800 hover-primary"><%= appointment.doctor_name %></h4>
+                                    <p class="text-primary h5"><%= appointment.speciality?.replace(/gy$/, 'gist') %></p>
+                                </a>
+                            </div>
+
+                            <!-- Add this CSS in the style section in head -->
+                            <style>
+                                .hover-primary:hover {
+                                    color: #4e73df !important;
+                                    transition: color 0.3s ease;
+                                }
+                            </style>
+
+                            <hr class="mb-4">
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h5 class="mb-4">Patient Information</h5>
+                                    <p><strong>Name:</strong> <%= appointment.patient_name %></p>
+                                    <p><strong>Email:</strong> <%= appointment.patient_email %></p>
+                                    <p><strong>Phone:</strong> <%= appointment.patient_phone %></p>
+                                    <p><strong>Blood Group:</strong> <%= appointment.patient_blood_grp %></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h5 class="mb-4">Medical Information</h5>
+                                    <p><strong>Allergies:</strong> <%= appointment.allergies || 'None' %></p>
+                                    <p><strong>Medical History:</strong> <%= appointment.medicalHistory || 'None' %></p>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <h5 class="mb-4">Appointment Details</h5>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p><strong>Date:</strong> <%= appointment.appointment_day %></p>
+                                            <p><strong>Time Slot:</strong> <%= appointment.appointment_time_slot %></p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p><strong>Consultation Fee:</strong> ₹<%= appointment.fees %></p>
+                                            <p><strong>Reason:</strong> <%= appointment.reason %></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <% if (appointment.status === 'Rejected' && appointment.rejection_reason) { %>
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <h5 class="mb-4 text-danger">Rejection Reason</h5>
+                                    <p><strong><%= appointment.rejection_reason %></strong></p>
+                                </div>
+                            </div>
+                            <% } %>
+
+                            <% if (appointment.status === 'Cancelled' && appointment.cancellation_reason) { %>
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <h5 class="mb-4 text-secondary">Cancellation Reason</h5>
+                                    <p><strong><%= appointment.cancellation_reason %></strong></p>
+                                </div>
+                            </div>
+                            <% } %>
+
+                            <% if (appointment.status === 'Pending') { %>
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    
+                                    <button type="button" class="btn btn-danger ml-2" data-toggle="modal" data-target="#rejectModal">
+                                        <i class="fas fa-times"></i> Reject Appointment
+                                    </button>
+                                </div>
+                            </div>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reject Modal -->
+    <div class="modal fade" id="rejectModal" tabindex="-1" role="dialog" aria-labelledby="rejectModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="rejectModalLabel">Reject Appointment</h5>
+                    <button class="close text-white" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <form action="/api/update-appointment-status-rejected/<%= appointment._id %>" method="POST">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="rejection_reason">Please provide a reason for rejection:</label>
+                            <textarea class="form-control" id="rejection_reason" name="rejection_reason" rows="4" required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger">Reject Appointment</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="/public/vendor/jquery/jquery.min.js"></script>
+    <script src="/public/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="/public/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="/public/js/sb-admin-2.min.js"></script>
+</body>
+</html>

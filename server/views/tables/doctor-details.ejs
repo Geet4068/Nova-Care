@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Doctor Details</title>
+    
+    <%- include('../layout/header-links') %>
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <%- include('../layout/sidebar') %>
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+                <%- include('../layout/topbar') %>
+
+                <div class="container-fluid">
+                    <!-- Flash Messages -->
+                    <div class="text-center">
+                        <% if (locals.successMessage && successMessage.length > 0) { %>
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <%= successMessage %>
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        <% } %>
+                        <% if (locals.errorMessage && errorMessage.length > 0) { %>
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <%= errorMessage %>
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        <% } %>
+                    </div>
+
+                    <!-- Doctor Details Card -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                            <h6 class="m-0 font-weight-bold text-primary">Doctor Details</h6>
+                            <a href="/doctors-database" class="btn btn-primary btn-sm">
+                                <i class="fas fa-arrow-left"></i> Back to Doctors
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <!-- Profile Picture -->
+                                <div class="col-md-3 text-center mb-4">
+                                    <% if (doctor.profile_pic && doctor.profile_pic !== '') { %>
+                                        <img src="/<%= doctor.profile_pic %>" alt="Doctor Profile" class="img-fluid rounded-circle" style="max-width: 200px;">
+                                    <% } else { %>
+                                        <img src="/public/img/undraw_profile.svg" alt="Default Profile" class="img-fluid rounded-circle" style="max-width: 200px;">
+                                    <% } %>
+                                </div>
+
+                                <!-- Basic Information -->
+                                <div class="col-md-9">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h5 class="mb-3">Personal Information</h5>
+                                            <p><strong>Name:</strong> <%= doctor.first_name %> <%= doctor.last_name %></p>
+                                            <p><strong>Email:</strong> <%= doctor.email %></p>
+                                            <p><strong>Phone:</strong> <%= doctor.phone %></p>
+                                            <p><strong>Gender:</strong> <%= doctor.gender %></p>
+                                            <p><strong>Status:</strong> 
+                                                <span class="badge badge-<%= doctor.status === 'approved' ? 'success' : (doctor.status === 'pending' ? 'warning' : 'danger') %>">
+                                                    <%= doctor.status.charAt(0).toUpperCase() + doctor.status.slice(1) %>
+                                                </span>
+                                            </p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h5 class="mb-3">Professional Information</h5>
+                                            <p><strong>Specialization:</strong> <%= doctor.specialization_name %></p>
+                                            <p><strong>Experience:</strong> <%= doctor.experience %> years</p>
+                                            <p><strong>Availability:</strong> 
+                                                <span class="badge badge-<%= doctor.availability ? 'success' : 'danger' %>">
+                                                    <%= doctor.availability ? 'Available' : 'Not Available' %>
+                                                </span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- About Section -->
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <h5 class="mb-3">About</h5>
+                                    <p><%= doctor.about %></p>
+                                </div>
+                            </div>
+
+                            <!-- Expertise Section -->
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <h5 class="mb-3">Expertise</h5>
+                                    <ul class="list-unstyled">
+                                        <% doctor.expertise.forEach(function(exp) { %>
+                                            <li><i class="fas fa-check-circle text-success mr-2"></i><%= exp %></li>
+                                        <% }); %>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Education Section -->
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <h5 class="mb-3">Education</h5>
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Year</th>
+                                                    <th>Degree</th>
+                                                    <th>University</th>
+                                                    <th>Additional Info</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% doctor.education.forEach(function(edu) { %>
+                                                    <tr>
+                                                        <td><%= edu.year %></td>
+                                                        <td><%= edu.degree %></td>
+                                                        <td><%= edu.university %></td>
+                                                        <td><%= edu.info %></td>
+                                                    </tr>
+                                                <% }); %>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Schedule Section or Action Buttons -->
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <% if (doctor.status === 'pending') { %>
+                                        <h5 class="mb-3">Actions</h5>
+                                        <div class="d-flex gap-2">
+                                            <a href="/doctor-accept-form/<%= doctor._id %>" class="btn btn-success mr-2">
+                                                <i class="fas fa-check"></i> Accept Doctor
+                                            </a>
+                                            <a href="/api/admin-reject-doctors/<%= doctor._id %>" class="btn btn-danger mr-2">
+                                                <i class="fas fa-times"></i> Reject Doctor
+                                            </a>
+                                            <a href="#" class="btn btn-danger" onclick="showDeleteModal('<%= doctor._id %>')">
+                                                <i class="fas fa-trash"></i> Delete Doctor
+                                            </a>
+                                        </div>
+                                    <% } else if (doctor.schedules && doctor.schedules.length > 0) { %>
+                                        <h5 class="mb-3">Schedule</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Day</th>
+                                                        <th>Time Slots</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <% doctor.schedules.forEach(function(schedule) { %>
+                                                        <tr>
+                                                            <td><%= schedule.day %></td>
+                                                            <td><%= schedule.time_slots.join(', ') %></td>
+                                                        </tr>
+                                                    <% }); %>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="mt-3 d-flex gap-2">
+                                            <a href="#" class="btn btn-danger mr-2" onclick="showDeleteModal('<%= doctor._id %>')">
+                                                <i class="fas fa-trash"></i> Delete Doctor
+                                            </a>
+                                            <a href="/api/activate-deactivate-doctor/<%= doctor._id %>" class="btn <%= doctor.availability ? 'btn-warning' : 'btn-success' %> mr-2">
+                                                <i class="fas <%= doctor.availability ? 'fa-ban' : 'fa-check-circle' %>"></i>
+                                                <%= doctor.availability ? 'Deactivate Account' : 'Activate Account' %>
+                                            </a>
+                                        </div>
+                                    <% } else { %>
+                                        <div class="d-flex gap-2">
+                                            <a href="#" class="btn btn-danger" onclick="showDeleteModal('<%= doctor._id %>')">
+                                                <i class="fas fa-trash"></i> Delete Doctor
+                                            </a>
+                                            <a href="/api/activate-deactivate-doctor/<%= doctor._id %>" class="btn <%= doctor.availability ? 'btn-warning' : 'btn-success' %> mr-2">
+                                                <i class="fas <%= doctor.availability ? 'fa-ban' : 'fa-check-circle' %>"></i>
+                                                <%= doctor.availability ? 'Deactivate Doctor' : 'Activate Doctor' %>
+                                            </a>
+                                        </div>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <%- include('../layout/footer') %>
+        </div>
+    </div>
+
+    <!-- Delete Doctor Modal -->
+    <div class="modal fade" id="deleteDoctorModal" tabindex="-1" role="dialog" aria-labelledby="deleteDoctorModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteDoctorModalLabel">Confirm Delete</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Are you sure you want to delete this doctor? This action cannot be undone.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-danger" id="confirmDeleteBtn" href="">Delete Doctor</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../layout/logout-modal') %>
+
+    <!-- Delete Doctor Modal -->
+    <div class="modal fade" id="deleteDoctorModal" tabindex="-1" role="dialog" aria-labelledby="deleteDoctorModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteDoctorModalLabel">Confirm Delete</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Are you sure you want to delete this doctor? This action cannot be undone.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-danger" id="confirmDeleteBtn" >Delete Doctor</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../layout/scripts') %>
+    
+    <script>
+        function showDeleteModal(doctorId) {
+            document.getElementById('confirmDeleteBtn').href = '/api/delete-doctor/' + doctorId;
+            $('#deleteDoctorModal').modal('show');
+        }
+    </script>
+</body>
+</html>

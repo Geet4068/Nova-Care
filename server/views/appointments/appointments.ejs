@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Admin-Appointments</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="/public/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+
+    <!-- Add after the existing stylesheet link -->
+    <style>
+        .table tbody tr:hover {
+            background-color: #f8f9fc !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: all 0.1s ease-in-out;
+        }
+
+        .table-responsive {
+            overflow-x: hidden !important;
+        }
+    </style>
+
+    <!-- Custom styles for this template-->
+    <link href="/public/css/sb-admin-2.min.css" rel="stylesheet">
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <!-- Sidebar -->
+        <%- include('../layout/sidebar') %>
+
+            <div id="content-wrapper" class="d-flex flex-column">
+                <div id="content">
+                    <!-- Topbar -->
+                    <%- include('../layout/topbar') %>
+                        <!-- Begin Page Content -->
+                        <div class="container-fluid">
+                            <h1 class="h3 mb-2 text-gray-800">Appointments</h1>
+                            <p class="mb-4">View and manage all patient appointments here.</p>
+
+                            <!-- All Appointments Table -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Appointments List</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <th>Patient Name</th>
+                                                    <th>Doctor Name</th>
+                                                    <th>Speciality</th>
+                                                    <th>Reason for Appointment</th>
+                                                    <th>Date</th>
+                                                    <th>Time Slot</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% appointments.forEach(function(appointment) { %>
+                                                    <tr style="cursor: pointer;"
+                                                        onclick="window.location='/admin/appointment/<%= appointment._id %>'">
+                                                        <td>
+                                                            <%= appointment.patient_name %>
+                                                        </td>
+                                                        <td>
+                                                            <%= appointment.doctor_name %>
+                                                        </td>
+                                                        <td>
+                                                            <%= appointment.speciality %>
+                                                        </td>
+                                                        <td>
+                                                            <%= appointment.reason %>
+                                                        </td>
+                                                        <td>
+                                                            <%= appointment.appointment_day %>
+                                                        </td>
+                                                        <td>
+                                                            <%= appointment.appointment_time_slot %>
+                                                        </td>
+                                                        <td>
+                                                            <span style="font-size: medium;" class="badge badge-<%= 
+                                                                appointment.status === 'Pending' ? 'warning' : 
+                                                                appointment.status === 'Completed' ? 'success' :
+                                                                appointment.status === 'Cancelled' ? 'secondary' :
+                                                                appointment.status === 'Missed' ? 'info' :
+                                                                appointment.status === 'Rejected' ? 'danger' : 'primary'
+                                                            %>">
+                                                                <%= appointment.status %>
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    <% }); %>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- pending appointments table -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3" id="pendingAppointments">
+                                    <h6 class="m-0 font-weight-bold text-warning">Pending Appointments</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="pendingTable" width="100%"
+                                            cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <th>Patient Name</th>
+                                                    <th>Doctor Name</th>
+                                                    <th>Speciality</th>
+                                                    <th>Reason For Appointment</th>
+                                                    <th>Date</th>
+                                                    <th>Time Slot</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% appointments.filter(a=> a.status ===
+                                                    'Pending').forEach(function(appointment) { %>
+                                                    <tr style="cursor: pointer;"
+                                                        onclick="window.location='/admin/appointment/<%= appointment._id %>'">
+                                                        <td>
+                                                            <%= appointment.patient_name %>
+                                                        </td>
+                                                        <td>
+                                                            <%= appointment.doctor_name %>
+                                                        </td>
+                                                        <td>
+                                                            <%= appointment.speciality %>
+                                                        </td>
+                                                        <td>
+                                                            <%= appointment.reason %>
+                                                        </td>
+                                                        <td>
+                                                            <%= appointment.appointment_day %>
+                                                        </td>
+                                                        <td>
+                                                            <%= appointment.appointment_time_slot %>
+                                                        </td>
+                                                        <td>
+                                                            <span style="font-size: medium;"
+                                                                class="badge badge-warning">
+                                                                <%= appointment.status %>
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    <% }); %>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Completed Appointments table -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3" id="completedAppointments">
+                                    <h6 class="m-0 font-weight-bold text-success">Completed Appointments</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="completedTable" width="100%"
+                                            cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <th>Patient Name</th>
+                                                    <th>Doctor Name</th>
+                                                    <th>Speciality</th>
+                                                    <th>Reason for Appointment</th>
+                                                    <th>Date</th>
+                                                    <th>Time Slot</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% appointments.filter(a=> a.status ===
+                                                    'Completed').forEach(function(appointment) { %>
+                                                    <tr style="cursor: pointer;"
+                                                        onclick="window.location='/admin/appointment/<%= appointment._id %>'">
+                                                        <td>
+                                                            <%= appointment.patient_name %>
+                                                        </td>
+                                                        <td>
+                                                            <%= appointment.doctor_name %>
+                                                        </td>
+                                                        <td>
+                                                            <%= appointment.speciality %>
+                                                        </td>
+                                                        <td>
+                                                            <%= appointment.reason %>
+                                                        </td>
+                                                        <td>
+                                                            <%= appointment.appointment_day %>
+                                                        </td>
+                                                        <td>
+                                                            <%= appointment.appointment_time_slot %>
+                                                        </td>
+                                                        <td>
+                                                            <span style="font-size: medium;"
+                                                                class="badge badge-success">
+                                                                <%= appointment.status %>
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    <% }); %>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Cancelled Appointments Table -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-danger">Cancelled Appointments</h6>
+                                </div>
+                                <div class="card-body" id="cancelledAppointments">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="cancelledTable" width="100%"
+                                            cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <th>Patient Name</th>
+                                                    <th>Doctor Name</th>
+                                                    <th>Speciality</th>
+                                                    <th>Cancellation Reason</th>
+                                                    <th>Date</th>
+                                                    <th>Time Slot</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% appointments.filter(a=> ['Cancelled'].includes(a.status)).forEach(function(appointment) { %>
+                                                    <tr style="cursor: pointer;"
+                                                        onclick="window.location='/admin/appointment/<%= appointment._id %>'">
+                                                        <td>
+                                                            <%= appointment.patient_name %>
+                                                        </td>
+                                                        <td>
+                                                            <%= appointment.doctor_name %>
+                                                        </td>
+                                                        <td>
+                                                            <%= appointment.speciality %>
+                                                        </td>
+                                                        <td>
+                                                            <%= appointment.cancellation_reason %>
+                                                        </td>
+                                                        <td>
+                                                            <%= appointment.appointment_day %>
+                                                        </td>
+                                                        <td>
+                                                            <%= appointment.appointment_time_slot %>
+                                                        </td>
+                                                        <td>
+                                                            <span style="font-size: medium;"
+                                                                class="badge badge-<%= appointment.status === 'Cancelled' ? 'secondary' : 'danger' %>">
+                                                                <%= appointment.status %>
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    <% }); %>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Rejected Appointments Table -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-danger">Rejected Appointments</h6>
+                                </div>
+                                <div class="card-body" id="cancelledAppointments">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="cancelledTable" width="100%"
+                                            cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <th>Patient Name</th>
+                                                    <th>Doctor Name</th>
+                                                    <th>Speciality</th>
+                                                    <th>Rejection Reason</th>
+                                                    <th>Date</th>
+                                                    <th>Time Slot</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% appointments.filter(a=> ['Rejected'].includes(a.status)).forEach(function(appointment) { %>
+                                                    <tr style="cursor: pointer;"
+                                                        onclick="window.location='/admin/appointment/<%= appointment._id %>'">
+                                                        <td>
+                                                            <%= appointment.patient_name %>
+                                                        </td>
+                                                        <td>
+                                                            <%= appointment.doctor_name %>
+                                                        </td>
+                                                        <td>
+                                                            <%= appointment.speciality %>
+                                                        </td>
+                                                        <td>
+                                                            <%= appointment.rejection_reason %>
+                                                        </td>
+                                                        <td>
+                                                            <%= appointment.appointment_day %>
+                                                        </td>
+                                                        <td>
+                                                            <%= appointment.appointment_time_slot %>
+                                                        </td>
+                                                        <td>
+                                                            <span style="font-size: medium;"
+                                                                class="badge badge-<%= appointment.status === 'Cancelled' ? 'secondary' : 'danger' %>">
+                                                                <%= appointment.status %>
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    <% }); %>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="/public/vendor/jquery/jquery.min.js"></script>
+    <script src="/public/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="/public/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="/public/js/sb-admin-2.min.js"></script>
+    
+</body>
+
+</html>

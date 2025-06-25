@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Verification</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f4f8fb;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 1000px !important;
+            background: white;
+            padding: 20px;
+            margin: 50px auto;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        .row {
+            display: flex;
+            gap: 20px;
+        }
+        .doctor-card, .form-card {
+            flex: 1;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: white;
+            box-shadow: 0px 0px 10px rgba(65, 57, 57, 0.1);
+        }
+        .doctor-card {
+            background-color: #e9f5f9;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+        .btn-success {
+            margin-top: 10px;
+        }
+        .form-select, .form-control {
+            border-radius: 5px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            flex-grow: 1;
+        }
+        .btn-add {
+            background-color: #28a745;
+            color: white;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            border: none;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <!-- Doctor Information Card -->
+            <div class="doctor-card">
+                <h3 class="text-primary">Doctor Information</h3>
+                <p><strong>Name:</strong> <%= doctor.first_name %> <%= doctor.last_name %></p>
+                <p><strong>Email:</strong> <%= doctor.email %></p>
+                <p><strong>Phone:</strong> <%= doctor.phone %></p>
+                <p><strong>Gender:</strong> <%= doctor.gender %></p>
+                <p><strong>Specialization:</strong> <%= doctor.specialization %></p>
+                <p><strong>Expertise:</strong> <%= doctor.expertise.join(", ") %></p>
+                <p><strong>About:</strong> <%= doctor.about %></p>
+                <p><strong>Experience:</strong> <%= doctor.experience %></p>
+                <p><strong>Status:</strong> <%= doctor.status %></p>
+            </div>
+            
+            <!-- Verification Form -->
+            <div class="form-card">
+                <h3 class="text-primary text-center">Verify Doctor</h3>
+                <form method="post" action="/api/admin-verify-doctors/<%= doctor._id %>">
+                    <div id="schedule-container"></div>
+                    <button type="button" class="btn btn-success" onclick="addSchedule()">+ Add Schedule Slot</button>
+                    <button type="submit" class="btn btn-primary d-block mt-3">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function addSchedule() {
+            let container = document.getElementById("schedule-container");
+    
+            let scheduleDiv = document.createElement("div");
+            scheduleDiv.classList.add("schedule-group");
+    
+            let daySelect = document.createElement("select");
+            daySelect.name = "day";
+            daySelect.classList.add("form-select");
+            daySelect.required = true;
+    
+            let days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            days.forEach(day => {
+                let option = document.createElement("option");
+                option.value = day;
+                option.textContent = day;
+                daySelect.appendChild(option);
+            });
+    
+            let timeSlotContainer = document.createElement("div");
+    
+            let addTimeSlotButton = document.createElement("button");
+            addTimeSlotButton.type = "button";
+            addTimeSlotButton.textContent = "+";
+            addTimeSlotButton.classList.add("btn", "btn-add", "mt-2");
+            addTimeSlotButton.onclick = () => addTimeSlot(timeSlotContainer);
+    
+            scheduleDiv.appendChild(daySelect);
+            scheduleDiv.appendChild(timeSlotContainer);
+            scheduleDiv.appendChild(addTimeSlotButton);
+    
+            addTimeSlot(timeSlotContainer);
+            container.appendChild(scheduleDiv);
+        }
+    
+        function addTimeSlot(container) {
+            let timeSlotInput = document.createElement("input");
+            timeSlotInput.type = "text";
+            timeSlotInput.name = "time_slot";
+            timeSlotInput.classList.add("form-control", "mt-2");
+            timeSlotInput.value = "9:00 AM - 11:00 AM";
+            timeSlotInput.required = true;
+    
+            container.appendChild(timeSlotInput);
+        }
+    
+        document.querySelector("form").addEventListener("submit", function (event) {
+            let schedules = [];
+            let scheduleGroups = document.querySelectorAll(".schedule-group");
+    
+            scheduleGroups.forEach(group => {
+                let day = group.querySelector("select").value;
+                let timeSlots = [...group.querySelectorAll("input[name='time_slot']")].map(input => input.value.trim()).filter(v => v);
+    
+                if (day && timeSlots.length > 0) {
+                    schedules.push({ day, time_slots: timeSlots });
+                }
+            });
+    
+            let fees = document.getElementById("fees").value.trim();
+    
+            let hiddenInput = document.createElement("input");
+            hiddenInput.type = "hidden";
+            hiddenInput.name = "schedules";
+            hiddenInput.value = JSON.stringify(schedules);
+    
+            this.appendChild(hiddenInput);
+        });
+    </script>
+</body>
+</html>

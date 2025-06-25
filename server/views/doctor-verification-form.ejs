@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Doctor Verification - NovaCare</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="/public/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="/public/css/sb-admin-2.min.css" rel="stylesheet">
+
+    <style>
+        #content {
+            min-height: calc(100vh - 100px);
+            padding-bottom: 60px;
+        }
+
+        .container-fluid {
+            min-height: 78vh !important;
+        }
+
+        .schedule-group {
+            border: 1px solid #e3e6f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            background-color: #f8f9fc;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        }
+
+        .btn-add {
+            background-color: #4e73df;
+            color: white;
+            border-radius: 50%;
+            width: 60px;
+            height: 35px;
+            border: none;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.6s;
+        }
+
+        .btn-add:hover {
+            background-color: #2e59d9;
+            transform: scale(1.05);
+        }
+
+        .verification-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 15px;
+        }
+
+        .doctor-info-card {
+            margin-bottom: 30px;
+        }
+
+        .verification-form {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        }
+
+        .table-bordered {
+            border: 1px solid #e3e6f0;
+        }
+
+        .table th {
+            background-color: #f8f9fc;
+            font-weight: 600;
+        }
+
+        .form-select {
+            display: block;
+            width: 100%;
+            padding: .375rem .75rem;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #6e707e;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #d1d3e2;
+            border-radius: .35rem;
+            transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+        }
+
+        .form-select:focus {
+            border-color: #bac8f3;
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, .25);
+        }
+    </style>
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <!-- Sidebar -->
+        <%- include('layout/sidebar.ejs') %>
+
+            <!-- Content Wrapper -->
+            <div id="content-wrapper" class="d-flex flex-column">
+                <!-- Main Content -->
+                <div id="content">
+                    <!-- Topbar -->
+                    <%- include('layout/topbar.ejs') %>
+
+                        <!-- Begin Page Content -->
+
+                        <div class="container-fluid">
+                            <div class="text-center">
+                                <% if (successMessage.length> 0) { %>
+                                    <p class="form-control bg-success">
+                                        <%= successMessage[0] %>
+                                    </p>
+                                    <% } %>
+
+                                        <% if (errorMessage.length> 0) { %>
+                                            <p class="form-control bg-danger">
+                                                <%= errorMessage[0] %>
+                                            </p>
+                                            <% } %>
+                            </div>
+
+                            <div class="container-fluid">
+                                <!-- Doctor Info Card -->
+                                <div class="card shadow mb-4">
+                                    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                                        <h6 class="m-0 font-weight-bold text-primary">Doctor Information</h6>
+                                        <a href="/doctors-database" class="btn btn-primary btn-sm">
+                                            <i class="fas fa-arrow-left"></i> Back to Doctors
+                                        </a>
+                                    </div>
+                                    <div class="card-body">
+                                        <!-- Profile Header -->
+                                        <div class="row mb-4">
+                                            <div class="col-md-3">
+                                                <% if (doctor.profile_pic && doctor.profile_pic !== '') { %>
+                                                    <img src="/<%= doctor.profile_pic %>" alt="Doctor Profile" 
+                                                         class="img-fluid" 
+                                                         style="width: 290px; height: 280px; object-fit: cover; object-position: top; border-radius: 130px;">
+                                                <% } else { %>
+                                                    <img src="/public/img/undraw_profile.svg" alt="Default Profile" 
+                                                         class="img-fluid" 
+                                                         style="width: 290px; height: 280px; object-fit: cover; object-position: top; border-radius: 130px;">
+                                                <% } %>
+                                            </div>
+                                            <div class="col-md-9">
+                                                <h3 class="font-weight-bold text-primary mb-4">Dr. <%= doctor.first_name %> <%= doctor.last_name %></h3>
+                                                <h5 class="text-muted mb-3"><%= doctor.specialization_name %></h5>
+                                                <p class="mb-1"><i class="fas fa-envelope mr-2"></i><%= doctor.email %></p>
+                                                <p class="mb-1"><i class="fas fa-phone mr-2"></i><%= doctor.phone %></p>
+                                                <p class="mb-1"><i class="fas fa-venus-mars mr-2"></i><%= doctor.gender %></p>
+                                                <p class="mb-1">
+                                                    <i class="fas fa-circle mr-2"></i>Status: 
+                                                    <span class="badge badge-<%= doctor.status === 'approved' ? 'success' : (doctor.status === 'rejected' ? 'danger' : 'warning') %>">
+                                                        <%= doctor.status %>
+                                                    </span>
+                                                </p>
+                                                <p class="mb-1"><i class="fas fa-briefcase mr-2"></i><%= doctor.experience %> years of experience</p>
+                                            </div>
+                                        </div>
+
+                                        <!-- About Section -->
+                                        <div class="row mt-4">
+                                            <div class="col-12">
+                                                <h5 class="text-primary mb-3">About</h5>
+                                                <p class="mb-4"><%= doctor.about %></p>
+                                            </div>
+                                        </div>
+
+                                        <!-- Expertise Section -->
+                                        <div class="row mt-2">
+                                            <div class="col-12">
+                                                <h5 class="text-primary mb-3">Expertise</h5>
+                                                <div class="d-flex flex-wrap gap-2">
+                                                    <% doctor.expertise.forEach((exp) => { %>
+                                                        <span class="badge badge-primary p-2 mr-2 mb-2"><%= exp %></span>
+                                                    <% }); %>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Education Section -->
+                                        <div class="row mt-4">
+                                            <div class="col-12">
+                                                <h5 class="text-primary mb-3">Education</h5>
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Year</th>
+                                                                <th>Degree</th>
+                                                                <th>University</th>
+                                                                <th>Details</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <% doctor.education.forEach((qual) => { %>
+                                                                <tr>
+                                                                    <td><%= qual.year %></td>
+                                                                    <td><%= qual.degree %></td>
+                                                                    <td><%= qual.university %></td>
+                                                                    <td><%= qual.info %></td>
+                                                                </tr>
+                                                            <% }); %>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <% if (doctor.status !=='approved' ) { %>
+                                    <!-- Verification Form Card -->
+                                    <div class="card shadow mb-4">
+                                        <!-- Add after the doctor info card and before the verification form -->
+                                        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                                            <h6 class="m-0 font-weight-bold text-primary">Doctor Verification Form</h6>
+                                        </div>
+
+                                        <!-- modal before the closing body tag -->
+                                        
+                                        <div class="modal fade" id="rejectDoctorModal" tabindex="-1" role="dialog" aria-labelledby="rejectDoctorModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="rejectDoctorModalLabel">Confirm Rejection</h5>
+                                                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">×</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        Are you sure you want to reject this doctor?
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                                                        <a class="btn btn-danger" id="confirmReject" href="">Reject</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Add the script before the closing body tag -->
+                                        <script>
+                                            function showRejectModal(rejectUrl) {
+                                                $('#confirmReject').attr('href', rejectUrl);
+                                                $('#rejectDoctorModal').modal('show');
+                                            }
+                                        </script>
+
+                                        <div class="card-body">
+                                            <form method="post" action="/api/admin-verify-doctors/<%= doctor._id %>">
+                                                <div class="form-group">
+                                                    <label for="fees">Consultation Fees (₹)</label>
+                                                    <input type="number" class="form-control" name="fees" id="fees"
+                                                        placeholder="Enter consultation fees" required>
+                                                </div>
+
+                                                <div id="schedule-container">
+                                                    <!-- Initial schedule group -->
+                                                    <div class="schedule-group">
+                                                        <select class="form-select" name="schedules[0][day]" required>
+                                                            <option value="">Select Day</option>
+                                                            <option value="Monday">Monday</option>
+                                                            <option value="Tuesday">Tuesday</option>
+                                                            <option value="Wednesday">Wednesday</option>
+                                                            <option value="Thursday">Thursday</option>
+                                                            <option value="Friday">Friday</option>
+                                                            <option value="Saturday">Saturday</option>
+                                                            <option value="Sunday">Sunday</option>
+                                                        </select>
+                                                        <select class="form-select" name="schedules[0][time_slots]"
+                                                            required>
+                                                            <option value="">Select Time Slot</option>
+                                                            <option value="06:00 AM - 07:00 AM">06:00 AM - 07:00 AM
+                                                            </option>
+                                                            <option value="07:00 AM - 09:00 AM">07:00 AM - 09:00 AM
+                                                            </option>
+                                                            <option value="09:00 AM - 11:00 AM">09:00 AM - 11:00 AM
+                                                            </option>
+                                                            <option value="11:00 AM - 01:00 PM">11:00 AM - 01:00 PM
+                                                            </option>
+                                                            <option value="01:00 PM - 03:00 PM">01:00 PM - 03:00 PM
+                                                            </option>
+                                                            <option value="03:00 PM - 05:00 PM">03:00 PM - 05:00 PM
+                                                            </option>
+                                                            <option value="05:00 PM - 07:00 PM">05:00 PM - 07:00 PM
+                                                            </option>
+                                                            <option value="07:00 PM - 09:00 PM">07:00 PM - 09:00 PM
+                                                            </option>
+                                                            <option value="09:00 PM - 10:00 PM">09:00 PM - 10:00 PM
+                                                            </option>
+                                                        </select>
+                                                        <button type="button" class="btn-add"
+                                                            onclick="this.parentElement.remove()">×</button>
+                                                    </div>
+                                                </div>
+
+                                                <div class="text-center mt-4">
+                                                    <button type="button" class="btn btn-info btn-icon-split"
+                                                        onclick="addSchedule()">
+                                                        <span class="icon text-white-50">
+                                                            <i class="fas fa-plus"></i>
+                                                        </span>
+                                                        <span class="text">Add Schedule Slot</span>
+                                                    </button>
+                                                </div>
+                                                <!-- Model for Reject Doctor -->
+                                                <!-- <div class="modal-body">Are you sure you want to reject this doctor?
+                                                </div> -->
+                                                <!-- <div class="modal-footer">
+                                                    <button class="btn btn-secondary" type="button"
+                                                        data-dismiss="modal">Cancel</button>
+                                                    <a class="btn btn-danger" id="confirmReject" href="">Reject</a>
+                                                </div> -->
+
+                                                <div class="mt-4">
+                                                    <button type="submit" class="btn btn-success btn-block">
+                                                        <i class="fas fa-check fa-sm"></i> Approve Doctor
+                                                    </button>
+                                                    <a href="javascript:void(0)" class="btn btn-danger btn-block mt-3" 
+                                                       onclick="showRejectModal('/api/admin-reject-doctors/<%= doctor._id %>')">
+                                                        <i class="fas fa-times fa-sm"></i> Reject Doctor
+                                                    </a>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                            </div>
+                        </div>
+                        <% } %>
+                </div>
+            </div>
+
+            <!-- Scroll to Top Button-->
+            <a class="scroll-to-top rounded" href="#page-top">
+                <i class="fas fa-angle-up"></i>
+            </a>
+
+            <!-- Bootstrap core JavaScript-->
+            <script src="/public/vendor/jquery/jquery.min.js"></script>
+            <script src="/public/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+            <!-- Core plugin JavaScript-->
+            <script src="/public/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+            <!-- Custom scripts for all pages-->
+            <script src="/public/js/sb-admin-2.min.js"></script>
+
+            <script>
+                let scheduleCounter = 1;
+
+                function addSchedule() {
+                    const container = document.getElementById('schedule-container');
+                    const scheduleGroup = document.createElement('div');
+                    scheduleGroup.className = 'schedule-group';
+                    scheduleGroup.innerHTML = `
+                        <select class="form-select" name="schedules[${scheduleCounter}][day]" required>
+                            <option value="">Select Day</option>
+                            <option value="Monday">Monday</option>
+                            <option value="Tuesday">Tuesday</option>
+                            <option value="Wednesday">Wednesday</option>
+                            <option value="Thursday">Thursday</option>
+                            <option value="Friday">Friday</option>
+                            <option value="Saturday">Saturday</option>
+                            <option value="Sunday">Sunday</option>
+                        </select>
+                        <select class="form-select" name="schedules[${scheduleCounter}][time_slots]" required>
+                            <option value="">Select Time Slot</option>
+                            <option value="06:00 AM - 07:00 AM">06:00 AM - 07:00 AM</option>
+                            <option value="07:00 AM - 09:00 AM">07:00 AM - 09:00 AM</option>
+                            <option value="09:00 AM - 11:00 AM">09:00 AM - 11:00 AM</option>
+                            <option value="11:00 AM - 01:00 PM">11:00 AM - 01:00 PM</option>
+                            <option value="01:00 PM - 03:00 PM">01:00 PM - 03:00 PM</option>
+                            <option value="03:00 PM - 05:00 PM">03:00 PM - 05:00 PM</option>
+                            <option value="05:00 PM - 07:00 PM">05:00 PM - 07:00 PM</option>
+                            <option value="07:00 PM - 09:00 PM">07:00 PM - 09:00 PM</option>
+                            <option value="09:00 PM - 10:00 PM">09:00 PM - 10:00 PM</option>
+                        </select>
+                        <button type="button" class="btn-add" onclick="this.parentElement.remove()">×</button>
+                    `;
+                    container.appendChild(scheduleGroup);
+                    scheduleCounter++;
+                }
+            </script>
+
+            <!-- Footer -->
+            <!-- <%- include('layout/footer.ejs') %> -->
+</body>
+
+</html>

@@ -1,0 +1,442 @@
+<h1 class="h3 mb-2 text-gray-800">Your Doctor Panel</h1>
+<p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
+    For more information about DataTables, please visit the <a target="_blank" href="https://datatables.net">official
+        DataTables documentation</a>.</p>
+
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Admin Database</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <h1 class="h3 mb-2 text-gray-800">Your Admin Panel</h1>
+
+            <!-- Pending Doctors--------- -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Pending Doctors List</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Gender</th>
+                                    <th>Speciality</th>
+                                    <th>Experience</th>
+                                    <th>Expertise</th>
+                                    <th>About</th>
+                                    <th>Approve/Reject</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (pendingDoctors.length> 0) { %>
+                                    <% pendingDoctors.forEach((doctor)=> { %>
+                                        <tr>
+                                            <td>
+                                                <%= doctor.first_name %>
+                                                    <%= doctor.last_name %>
+                                            </td>
+                                            <td>
+                                                <%= doctor.email %>
+                                            </td>
+                                            <td>
+                                                <%= doctor.phone %>
+                                            </td>
+                                            <td>
+                                                <%= doctor.gender %>
+                                            </td>
+                                            <td>
+                                                <%= doctor.speciality.department %>
+                                            </td>
+                                            <td>
+                                                <%= doctor.experience %>
+                                            </td>
+                                            <td>
+                                                <% doctor.expertise.forEach((exp)=> { %>
+                                                    <li>
+                                                        <%= exp %>
+                                                    </li>
+                                                    <% }); %>
+                                            </td>
+                                            <td>
+                                                <%= doctor.about %>
+                                            </td>
+                                            <td colspan="2">
+                                                <div style="display: flex; flex-direction: column;">
+                                                    <a style="margin-bottom: 5px ;"
+                                                        href="/doctor-accept-form/<%= doctor._id %>"
+                                                        class="btn btn-success">Approve</a>
+                                                    <a style="margin-top: 5px ;"
+                                                        href="/api/admin-reject-doctors/<%= doctor._id %>"
+                                                        class="btn btn-danger">Reject</a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <% }); %>
+                                            <% } else { %>
+                                                <tr>
+                                                    <td colspan="10" class="text-center">No doctors found</td>
+                                                </tr>
+                                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Approved Doctors--------- -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Approved Doctors List</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Gender</th>
+                                    <th>Speciality</th>
+                                    <th>Experience</th>
+                                    <th>Expertise</th>
+                                    <th>Fees</th>
+                                    <th>Schedule</th>
+                                    <th>About</th>
+                                    <th>Available</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (approvedDoctors.length> 0) { %>
+                                    <% approvedDoctors.forEach((doctor)=> { %>
+                                        <tr>
+                                            <td>
+                                                <%= doctor.first_name %>
+                                                    <%= doctor.last_name %>
+                                            </td>
+                                            <td>
+                                                <%= doctor.email %>
+                                            </td>
+                                            <td>
+                                                <%= doctor.phone %>
+                                            </td>
+                                            <td>
+                                                <%= doctor.gender %>
+                                            </td>
+                                            <td>
+                                                <%= doctor.speciality.department %>
+                                            </td>
+                                            <td>
+                                                <%= doctor.experience %>
+                                            </td>
+                                            <td>
+                                                <% doctor.expertise.forEach((exp)=> { %>
+                                                    <li>
+                                                        <%= exp %>
+                                                    </li>
+                                                    <% }); %>
+                                            </td>
+                                            <td>
+                                                <%= doctor.fees %>
+                                            </td>
+                                            <td>
+                                                <% doctor.schedules.forEach((schedule)=> { %>
+                                                  <%= schedule.day %> - 
+                                                        <li style="list-style-type: circle; font-size: small;">
+                                                            <%= (schedule.time_slots) %>
+                                                        </li>
+
+                                                        <% }); %>
+                                            </td>
+                                            <td>
+                                                <%= doctor.about %>
+                                            </td>
+                                            <td>
+                                                <% if (doctor.availability==true) { %>
+                                                    <span class="badge badge-success"
+                                                        style="font-size: medium;">yes</span>
+                                                    <% } else { %>
+                                                        <span class="badge badge-danger"
+                                                            style="font-size: medium;">No</span>
+                                                        <% } %>
+                                            </td>
+                                        </tr>
+                                        <% }); %>
+                                            <% } else { %>
+                                                <tr>
+                                                    <td colspan="8" class="text-center">No doctors found</td>
+                                                </tr>
+                                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rejected Doctors--------- -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Rejected Doctors List</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Gender</th>
+                                    <th>Speciality</th>
+                                    <th>Experience</th>
+                                    <th>Expertise</th>
+                                    <th>About</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (rejectedDoctors.length> 0) { %>
+                                    <% rejectedDoctors.forEach((doctor)=> { %>
+                                        <tr>
+                                            <td>
+                                                <%= doctor.first_name %>
+                                                    <%= doctor.last_name %>
+                                            </td>
+                                            <td>
+                                                <%= doctor.email %>
+                                            </td>
+                                            <td>
+                                                <%= doctor.phone %>
+                                            </td>
+                                            <td>
+                                                <%= doctor.gender %>
+                                            </td>
+                                            <td>
+                                                <%= doctor.speciality.department %>
+                                            </td>
+                                            <td>
+                                                <%= doctor.experience %>
+                                            </td>
+                                            <td>
+                                                <% doctor.expertise.forEach((exp)=> { %>
+                                                    <li>
+                                                        <%= exp %>
+                                                    </li>
+                                                    <% }); %>
+                                            </td>
+                                            <td>
+                                                <%= doctor.about %>
+                                            </td>
+                                        </tr>
+                                        <% }); %>
+                                            <% } else { %>
+                                                <tr>
+                                                    <td colspan="8" class="text-center">No doctors found</td>
+                                                </tr>
+                                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Patients List------------- -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Patients List</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Gender</th>
+                                    <th>Verified</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (patients.length> 0) { %>
+                                    <% patients.forEach((patient)=> { %>
+                                        <tr>
+                                            <td>
+                                                <%= patient.first_name %>
+                                                    <%= patient.last_name %>
+                                            </td>
+                                            <td>
+                                                <%= patient.email %>
+                                            </td>
+                                            <td>
+                                                <%= patient.phone %>
+                                            </td>
+                                            <td>
+                                                <%= patient.gender %>
+                                            </td>
+                                            <td>
+                                                <% if (patient.is_verified===true) { %>
+                                                    <span class="badge badge-success"
+                                                        style="font-size: small;">Yes</span>
+                                                    <% } else { %>
+                                                        <span class="badge badge-danger"
+                                                            style="font-size: small;">No</span>
+                                                        <% } %>
+                                            </td>
+                                        </tr>
+                                        <% }); %>
+                                            <% } else { %>
+                                                <tr>
+                                                    <td colspan="3" class="text-center">No patients found</td>
+                                                </tr>
+                                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- All Doctors------------  -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">All Doctors List</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Gender</th>
+                                    <th>Speciality</th>
+                                    <th>Experience</th>
+                                    <th>Expertise</th>
+                                    <th>About</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (doctors.length> 0) { %>
+                                    <% doctors.forEach((doctor)=> { %>
+                                        <tr>
+                                            <td>
+                                                <%= doctor.first_name %>
+                                                    <%= doctor.last_name %>
+                                            </td>
+                                            <td>
+                                                <%= doctor.email %>
+                                            </td>
+                                            <td>
+                                                <%= doctor.phone %>
+                                            </td>
+                                            <td>
+                                                <%= doctor.gender %>
+                                            </td>
+                                            <td>
+                                                <%= doctor.speciality.department %>
+                                            </td>
+                                            <td>
+                                                <%= doctor.experience %>
+                                            </td>
+                                            <td>
+                                                <% doctor.expertise.forEach((exp)=> { %>
+                                                    <li>
+                                                        <%= exp %>
+                                                    </li>
+                                                    <% }); %>
+                                            </td>
+                                            <td>
+                                                <%= doctor.about %>
+                                            </td>
+                                            <td>
+                                                <% if (doctor.status=="approved" ) { %>
+                                                    <span class="badge badge-success"
+                                                        style="font-size: medium;">Approved</span>
+                                                    <% } else if (doctor.status=="pending" ) { %>
+                                                        <span class="badge badge-danger"
+                                                            style="font-size: medium;">Pending</span>
+                                                        <% } else { %>
+                                                            <span class="badge badge-danger"
+                                                                style="font-size: medium;">Rejected</span>
+                                                            <% } %>
+                                            </td>
+                                        </tr>
+                                        <% }); %>
+                                            <% } else { %>
+                                                <tr>
+                                                    <td colspan="8" class="text-center">No doctors found</td>
+                                                </tr>
+                                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admins List------------- -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Admins</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Verified</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (admins.length> 0) { %>
+                                    <% admins.forEach((patient)=> { %>
+                                        <tr>
+                                            <td>
+                                                <%= patient.first_name %>
+                                                    <%= patient.last_name %>
+                                            </td>
+                                            <td>
+                                                <%= patient.email %>
+                                            </td>
+                                            <td>
+                                                <%= patient.phone %>
+                                            </td>
+                                            <td>
+                                                <% if (patient.is_verified===true) { %>
+                                                    <span class="badge badge-success"
+                                                        style="font-size: medium;">Verified</span>
+                                                    <% } else { %>
+                                                        <span class="badge badge-danger" style="font-size: medium;">Not
+                                                            Verified</span>
+                                                        <% } %>
+                                            </td>
+                                        </tr>
+                                        <% }); %>
+                                            <% } else { %>
+                                                <tr>
+                                                    <td colspan="4" class="text-center">No patients found</td>
+                                                </tr>
+                                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+</div>
+<!-- /.container-fluid -->
+
+</div>
